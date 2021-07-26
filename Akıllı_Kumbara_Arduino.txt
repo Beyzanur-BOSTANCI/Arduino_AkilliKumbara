@@ -1,0 +1,49 @@
+#include <LiquidCrystal.h>                       /* LCD kullanımı için kütüphane dahil edilmelidir*/
+LiquidCrystal lcd(12,11,5,4,3,2);              /* LCD’nin bağlandığı arduino pinleri*/      
+const int CNY700=A0;	            		/*CNY70 arduino pinleri*/
+const int CNY701=A1;
+const int CNY702=A2;
+const int CNY703=A3;
+const int CNY704=A4;
+float toplam=0;
+int ReferansDegeri=800;	/*Siyah ve beyaz rengi ayırt etmek için gerekli analog sinyal değeri*/
+int butonPin=9;			/*Buton arduino pini*/
+int butonDurum=0;		/*Butonun ilk durumu*/
+void setup() {
+  lcd.begin(16,2);		/* LCD’nin sütun ve satır sayısını belirtir*/
+pinMode(CNY700,INPUT);	/*Kullanılan pini giriş olarak tanımlar*/
+pinMode(CNY701,INPUT);
+pinMode(CNY702,INPUT);
+pinMode(CNY703,INPUT);
+pinMode(CNY704,INPUT);
+pinMode(butonPin,INPUT);
+}
+void loop() {
+int deg0=analogRead(CNY700);        /*Sensöre gelen verilerin analog sinyallere çevrilmesini sağlar*/
+int deg1=analogRead(CNY701);
+int deg2=analogRead(CNY702);
+int deg3=analogRead(CNY703);
+int deg4=analogRead(CNY704);
+butonDurum=digitalRead(butonPin); /*Arduino’nun butondaki veriyi dijital olarak okumasını sağlar*/
+if(butonDurum==HIGH){                      /*Button High olduğunda işlenmesi gereken koşullar uygulanır*/
+if(deg0>ReferansDegeri) /*deg0 ReferansDegerinden büyükse siyah olduğunu algılar, koşulu uygular
+{
+toplam=+1.00;}		 /*1 Lira geçtiğinde sensör veriyi algılayıp toplam değişkenine aktarır.*/
+else if(deg1>ReferansDegeri)
+{
+toplam=+0.50;}		/*50 kr geçtiğinde sensör veriyi algılayıp toplam değişkenine aktarır.*/
+else if(deg2>ReferansDegeri)
+{
+toplam=+0.25;}		/*25 kr geçtiğinde sensör veriyi algılayıp toplam değişkenine aktarır.*/
+else if(deg3>ReferansDegeri)
+{
+toplam=+0.10;}		/*10 kr geçtiğinde sensör veriyi algılayıp toplam değişkenine aktarır.*/
+else if(deg4>ReferansDegeri)
+{
+toplam=+0.05;}			/*5 kr geçtiğinde sensör veriyi algılayıp toplam değişkenine aktarır.*/
+lcd.print("Toplam");		/*Ekrana ‘toplam’ mesajını yazdırır.*/
+lcd.print(toplam);		/*’toplam’ değişkeninin değerini ekrana yazdırır*/
+lcd.print("TL");			/*Ekrana ‘TL’ mesajını yazdırır.*/
+lcd.print(millis()/1000);		/*Ekrandaki mesajın beklemesini sağlar.*/
+  }
+ }
